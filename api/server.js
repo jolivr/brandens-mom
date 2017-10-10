@@ -11,33 +11,39 @@ var jwtCheck = jwt({
   audience: 'http://budgetcal.wtfcoding.com'
 });
 
-var guard = function(req, res, next){
+var guard = function(req, res, next) {
   // we’ll use a case switch statement on the route requested
-  switch(req.path){
+  switch (req.path) {
     // if the request is for movie reviews we’ll check to see if the token has general scope
-    case '/movies' : {
-      var permissions = ['general'];
-      for(var i = 0; i < permissions.length; i++){
-        if(req.user.scope.includes(permissions[i])){
-          next();
-        } else {
-          res.send(403, {message:'Forbidden'});
+    case '/movies':
+      {
+        var permissions = ['general'];
+        for (var i = 0; i < permissions.length; i++) {
+          if (req.user.scope.includes(permissions[i])) {
+            next();
+          } else {
+            res.send(403, {
+              message: 'Forbidden'
+            });
+          }
         }
+        break;
       }
-      break;
-    }
-    case '/pending': {
-      var permissions = ['admin'];
-      console.log(req.user.scope);
-      for(var i = 0; i < permissions.length; i++){
-        if(req.user.scope.includes(permissions[i])){
-          next();
-        } else {
-          res.send(403, {message:'Forbidden'});
+    case '/pending':
+      {
+        var permissions = ['admin'];
+        console.log(req.user.scope);
+        for (var i = 0; i < permissions.length; i++) {
+          if (req.user.scope.includes(permissions[i])) {
+            next();
+          } else {
+            res.send(403, {
+              message: 'Forbidden'
+            });
+          }
         }
+        break;
       }
-      break;
-    }
   }
 }
 
@@ -45,9 +51,11 @@ var guard = function(req, res, next){
 app.use(jwtCheck);
 
 // If we do not get the correct credentials, we’ll return an appropriate message
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
   if (err.name === 'UnauthorizedError') {
-    res.status(401).json({message:'Missing or invalid token'});
+    res.status(401).json({
+      message: 'Missing or invalid token'
+    });
   }
 });
 
@@ -55,16 +63,57 @@ app.use(guard);
 
 
 // Implement the movies API endpoint
-app.get('/movies', function(req, res){
+app.get('/movies', function(req, res) {
   // Get a list of movies and their review scores
-  var movies = [
-    {title : 'Suicide Squad', release: '2016', score: 8, reviewer: 'Robert Smith', publication : 'The Daily Reviewer'},
-    {title : 'Batman vs. Superman', release : '2016', score: 6, reviewer: 'Chris Harris', publication : 'International Movie Critic'},
-    {title : 'Captain America: Civil War', release: '2016', score: 9, reviewer: 'Janet Garcia', publication : 'MoviesNow'},
-    {title : 'Deadpool', release: '2016', score: 9, reviewer: 'Andrew West', publication : 'MyNextReview'},
-    {title : 'Avengers: Age of Ultron', release : '2015', score: 7, reviewer: 'Mindy Lee', publication: 'Movies n\' Games'},
-    {title : 'Ant-Man', release: '2015', score: 8, reviewer: 'Martin Thomas', publication : 'TheOne'},
-    {title : 'Guardians of the Galaxy', release : '2014', score: 10, reviewer: 'Anthony Miller', publication : 'ComicBookHero.com'},
+  var movies = [{
+      title: 'Suicide Squad',
+      release: '2016',
+      score: 8,
+      reviewer: 'Robert Smith',
+      publication: 'The Daily Reviewer'
+    },
+    {
+      title: 'Batman vs. Superman',
+      release: '2016',
+      score: 6,
+      reviewer: 'Chris Harris',
+      publication: 'International Movie Critic'
+    },
+    {
+      title: 'Captain America: Civil War',
+      release: '2016',
+      score: 9,
+      reviewer: 'Janet Garcia',
+      publication: 'MoviesNow'
+    },
+    {
+      title: 'Deadpool',
+      release: '2016',
+      score: 9,
+      reviewer: 'Andrew West',
+      publication: 'MyNextReview'
+    },
+    {
+      title: 'Avengers: Age of Ultron',
+      release: '2015',
+      score: 7,
+      reviewer: 'Mindy Lee',
+      publication: 'Movies n\' Games'
+    },
+    {
+      title: 'Ant-Man',
+      release: '2015',
+      score: 8,
+      reviewer: 'Martin Thomas',
+      publication: 'TheOne'
+    },
+    {
+      title: 'Guardians of the Galaxy',
+      release: '2014',
+      score: 10,
+      reviewer: 'Anthony Miller',
+      publication: 'ComicBookHero.com'
+    },
   ]
 
   // Send the response as a JSON array
@@ -72,12 +121,29 @@ app.get('/movies', function(req, res){
 })
 
 // Implement the pending reviews API endpoint
-app.get('/pending', function(req, res){
+app.get('/pending', function(req, res) {
   // Get a list of pending movie reviews
-  var pending = [
-    {title : 'Superman: Homecoming', release: '2017', score: 10, reviewer: 'Chris Harris', publication: 'International Movie Critic'},
-    {title : 'Wonder Woman', release: '2017', score: 8, reviewer: 'Martin Thomas', publication : 'TheOne'},
-    {title : 'Doctor Strange', release : '2016', score: 7, reviewer: 'Anthony Miller', publication : 'ComicBookHero.com'}
+  var pending = [{
+      title: 'Superman: Homecoming',
+      release: '2017',
+      score: 10,
+      reviewer: 'Chris Harris',
+      publication: 'International Movie Critic'
+    },
+    {
+      title: 'Wonder Woman',
+      release: '2017',
+      score: 8,
+      reviewer: 'Martin Thomas',
+      publication: 'TheOne'
+    },
+    {
+      title: 'Doctor Strange',
+      release: '2016',
+      score: 7,
+      reviewer: 'Anthony Miller',
+      publication: 'ComicBookHero.com'
+    }
   ]
 
   // Send the list of pending movie reviews as a JSON array
